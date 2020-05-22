@@ -19,7 +19,11 @@ const useStyles = makeStyles((theme) => ({
     button: {
         color: 'white',
         fontSize: '20px'
-    }
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
 
 }));
 
@@ -56,7 +60,7 @@ const StyledMenuItem = withStyles((theme) => ({
 }))(MenuItem);
 
 
-export default function NavBar({ setChiefMenu }) {
+export default function NavBar({ setChiefMenu, setBackdropOpen }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     useEffect(() => {
         axios.post("http://localhost:5000/api/client/login", { username: localStorage.getItem("Username"), password: localStorage.getItem("Password") })
@@ -76,6 +80,13 @@ export default function NavBar({ setChiefMenu }) {
     const applyOrder = () => {
         axios.post("http://localhost:5000/api/client/applyOrder", { username: localStorage.getItem("Username"), password: localStorage.getItem("Password"), pizzas: pizzas }
         ).then(res => window.location.reload())
+    }
+
+    const getRaport = () => {
+        axios.get("http://localhost:5000/api/client/getBasket")
+            .then(res => {
+                console.dir(res.data)
+            })
     }
 
     const [openRegister, setOpenRegister] = useState(false);
@@ -126,12 +137,6 @@ export default function NavBar({ setChiefMenu }) {
                             Chief menu
                         </Button>
                     </Typography>
-                    <Button
-                        color="inherit"
-
-                    >
-                        Raport
-                        </Button>
                     {!isLoggedIn && <>
                         <Button
                             color="inherit"
@@ -199,6 +204,6 @@ export default function NavBar({ setChiefMenu }) {
                     </IconButton>}
                 </Toolbar>
             </AppBar>
-        </div>
+        </div >
     );
 }
