@@ -1,7 +1,5 @@
 const { day } = require('./index');
 
-jest.useFakeTimers();
-
 const doc = [
     {
         "_id": "5ec7f5306dcc0737000ed1de",

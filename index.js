@@ -75,13 +75,14 @@ exports.day = (doc) =>
 
 app.get('/api/getRaport', function elo(req, res) {
     Order.find().then(doc => {
-        const day = [...Array(24).keys()].map((x) => {
-            const mappedObjects = doc.filter((z) => z.time === x);
-            if (mappedObjects.length && mappedObjects !== undefined) {
-                return mappedObjects.map(obj => obj.pizzas.reduce((a, b) => a + Number(b.price), 0)).reduce((a, b) => a + b, 0);
-            }
-            return 0;
-        })
+        const day = [...Array(24).keys()]
+            .map(x => {
+                const mappedObjects = doc.filter(z => z.time === x);
+                if (mappedObjects.length && mappedObjects !== undefined) {
+                    return mappedObjects.map(obj => obj.pizzas.reduce((a, b) => a + Number(b.price), 0)).reduce((a, b) => a + b, 0);
+                }
+                return 0;
+            })
         res.send(day)
     })
 });
