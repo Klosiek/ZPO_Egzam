@@ -5,7 +5,6 @@ import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import Register from './Register';
 import Login from './Login';
 import axios from 'axios';
-import { set } from 'mongoose';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -17,6 +16,11 @@ const useStyles = makeStyles((theme) => ({
     title: {
         flexGrow: 1,
     },
+    button: {
+        color: 'white',
+        fontSize: '20px'
+    }
+
 }));
 
 const StyledMenu = withStyles({
@@ -52,7 +56,7 @@ const StyledMenuItem = withStyles((theme) => ({
 }))(MenuItem);
 
 
-export default function NavBar() {
+export default function NavBar({ setChiefMenu }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     useEffect(() => {
         axios.post("http://localhost:5000/api/client/login", { username: localStorage.getItem("Username"), password: localStorage.getItem("Password") })
@@ -70,8 +74,8 @@ export default function NavBar() {
     }
 
     const applyOrder = () => {
-        axios.post("http://localhost:5000/api/client/applyOrder", { username: localStorage.getItem("Username"), password: localStorage.getItem("Password") }
-        )
+        axios.post("http://localhost:5000/api/client/applyOrder", { username: localStorage.getItem("Username"), password: localStorage.getItem("Password"), pizzas: pizzas }
+        ).then(res => window.location.reload())
     }
 
     const [openRegister, setOpenRegister] = useState(false);
@@ -103,7 +107,24 @@ export default function NavBar() {
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>
-                        Menu
+                        <Button
+                            className={classes.button}
+                            onClick={() =>
+                                setChiefMenu(false)
+                            }
+                        >
+                            Menu
+                        </Button>
+                    </Typography>
+                    <Typography variant="h6" className={classes.title}>
+                        <Button
+                            className={classes.button}
+                            onClick={() =>
+                                setChiefMenu(true)
+                            }
+                        >
+                            Chief menu
+                        </Button>
                     </Typography>
                     {!isLoggedIn && <>
                         <Button
@@ -128,7 +149,7 @@ export default function NavBar() {
                                 window.location.reload();
                             }}
                         >
-                            Wyloguj
+                            Logout
                         </Button>}
                     <Register handleClose={handleCloseRegister} open={openRegister} />
                     <Login handleClose={handleCloseLogin} open={openLogin} />
@@ -155,6 +176,9 @@ export default function NavBar() {
                                     <ListItemText primary={x.name} />
                                 </StyledMenuItem>)
                             )}
+                            <MenuItem>
+                                {"Cena: " + pizzas.reduce((total, arg) => total + arg.price, 0) + "zł"}
+                            </MenuItem>
                             <Button
                                 variant="contained"
                                 color="primary"

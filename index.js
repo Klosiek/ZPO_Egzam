@@ -8,11 +8,12 @@ const connector = require('./connectionSetup');
 
 const User = require('./Schemas/UserSchema');
 const pizzaSchema = require('./Schemas/PizzaSchema');
-const Order = require('./Schemas/OrderSchema');
+const orderSchema = require('./Schemas/OrderSchema');
 const cors = require('cors');
 
 
 const Pizza = mongoose.model('Pizza', pizzaSchema);
+const Order = mongoose.model('Order', orderSchema);
 
 app.use(cors());
 
@@ -24,12 +25,6 @@ connector();
 
 app.get('/', function (req, res) {
     res.send('Hello World')
-});
-
-app.get('/api/getAllPizzas', function (req, res) {
-    Pizza.find().then(doc => {
-        res.json({ items: doc })
-    });
 });
 
 app.post('/api/addPizza', function (req, res) {
@@ -56,6 +51,22 @@ app.post('/api/addUser', function (req, res) {
     res.sendStatus(201);
 });
 
+app.get('/api/getAllPizzas', function (req, res) {
+    Pizza.find().then(doc => {
+        res.json({ items: doc })
+    });
+});
+
+app.get('/api/getAllOrders', function (req, res) {
+    Order.find().then(doc => {
+        res.json({ items: doc })
+    });
+});
+
+app.post('/api/removeOrder', function (req, res) {
+    Order.findOneAndDelete({ price: req.body.price, pizzas: req.body.pizzas }).then(doc => res.sendStatus(200))
+});
+
 app.post('/api/client/addItem', function (req, res) {
 
     User.findOne({ username: req.body.username, password: req.body.password }).exec().then(doc => {
@@ -80,6 +91,23 @@ app.get('/api/client/getBasket', function (req, res) {
 });
 
 app.post('/api/client/applyOrder', function (req, res) {
+    var sum = 0;
+    req.body.pizzas.forEach(element => {
+        sum = sum + element.price;
+    });
+    var pizzasArray = []
+    req.body.pizzas.forEach(element => {
+        pizzasArray.push(element);
+    });
+
+    const order = {
+        price: sum,
+        pizzas: pizzasArray
+    }
+
+    const orderData = new Order(order);
+    orderData.save();
+
     User.findOneAndUpdate({ username: req.body.username, password: req.body.password }, { orders: [] }).exec().then(doc => {
         res.sendStatus(200);
     });
