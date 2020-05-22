@@ -18,7 +18,7 @@ const theme = createMuiTheme({
 function MainPage() {
     const [pizzas, setPizzas] = useState([]);
     const [orders, setOrders] = useState([]);
-    const [isChiefMenu, setChiefMenu] = useState(true);
+    const [isChiefMenu, setChiefMenu] = useState(false);
     const [orderToRemove, setOrderToRemove] = useState();
 
     useEffect(() => {

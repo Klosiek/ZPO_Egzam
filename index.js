@@ -100,7 +100,10 @@ app.post('/api/client/applyOrder', function (req, res) {
         pizzasArray.push(element);
     });
 
+    var today = new Date();
+
     const order = {
+        time: today.getHours(),
         price: sum,
         pizzas: pizzasArray
     }

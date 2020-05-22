@@ -126,6 +126,12 @@ export default function NavBar({ setChiefMenu }) {
                             Chief menu
                         </Button>
                     </Typography>
+                    <Button
+                        color="inherit"
+
+                    >
+                        Raport
+                        </Button>
                     {!isLoggedIn && <>
                         <Button
                             color="inherit"
