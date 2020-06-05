@@ -47,7 +47,6 @@ const StyledMenu = withStyles({
     />
 ));
 
-
 const StyledMenuItem = withStyles((theme) => ({
     root: {
         '&:focus': {
@@ -62,11 +61,17 @@ const StyledMenuItem = withStyles((theme) => ({
 
 export default function NavBar({ setChiefMenu, setBackdropOpen }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    var jwt = require('jwt-simple');
+    var localStorageJwt = localStorage.getItem("JwtToken");
+
     useEffect(() => {
-        axios.post("http://localhost:5000/api/client/login", { username: localStorage.getItem("Username"), password: localStorage.getItem("Password") })
-            .then(res => {
-                if (res.data) setIsLoggedIn(true);
-            })
+        if (localStorageJwt !== null) {
+            var JwtToken = jwt.decode(localStorageJwt, "secrethash");
+            axios.post("http://localhost:5000/api/client/login", { username: JwtToken.username, password: JwtToken.password })
+                .then(res => {
+                    if (res.data) setIsLoggedIn(true);
+                })
+        }
     }, []);
 
     const getBasket = () => {
@@ -155,8 +160,7 @@ export default function NavBar({ setChiefMenu, setBackdropOpen }) {
                         <Button
                             color="inherit"
                             onClick={() => {
-                                localStorage.setItem("Username", "");
-                                localStorage.setItem("Password", "");
+                                localStorage.clear();
                                 window.location.reload();
                             }}
                         >

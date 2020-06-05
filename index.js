@@ -47,7 +47,6 @@ app.post('/api/addUser', function (req, res) {
 
     const userData = new User(user);
     userData.save();
-    console.log(req.body);
     res.sendStatus(201);
 });
 
@@ -160,8 +159,6 @@ app.post('/api/addPizza', function (req, res) {
 
     const userData = new User(pizza);
     userData.save();
-    console.log(req.body);
-    console.log(req.body);
     res.sendStatus(200);
 });
 

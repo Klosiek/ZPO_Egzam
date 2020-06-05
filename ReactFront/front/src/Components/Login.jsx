@@ -13,14 +13,13 @@ export default function Login({ handleClose, open }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-
+    var jwt = require('jwt-simple');
 
     const login = () => (
         axios.post("http://localhost:5000/api/client/login", { username: username, password: password })
             .then(res => {
                 if (res.data) {
-                    localStorage.setItem("Username", username);
-                    localStorage.setItem("Password", password);
+                    localStorage.setItem("JwtToken", jwt.encode({ username: username, password: password }, "secrethash"));
                     window.location.reload(true);
                 } else { setError("Wrong email or password") }
             })
